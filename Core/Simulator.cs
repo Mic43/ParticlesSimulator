@@ -11,6 +11,7 @@ namespace Core
     {
         private readonly Stopwatch _stopwatch = new Stopwatch();
         public ICollection<ITickReceiver> Particles { get; private set; }
+        public event EventHandler<TimeSpan> StepOccured;
 
         public Simulator() : this(Enumerable.Empty<ITickReceiver>().ToList())
         {
@@ -21,14 +22,13 @@ namespace Core
             Particles = particles ?? throw new ArgumentNullException(nameof(particles));
         }
 
-        private void Tick()
+        private void DoTick()
         {
             foreach (var particle in Particles)
             {
                 particle.OnTick(_stopwatch.Elapsed);    
             }   
         }
-
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
@@ -37,17 +37,31 @@ namespace Core
 
         public async Task StartAsync(CancellationToken cancellationToken,IProgress<ICollection<IPositionable<float>>> progress)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 _stopwatch.Start();
+               // long it = 0;
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    progress?.Report(Particles.OfType<IPositionable<float>>().ToList());
-                    Tick();
-                    _stopwatch.Restart();
+                    await Task.WhenAll(Task.Delay(1, cancellationToken),
+                        Task.Run( () =>
+                        {
+                            //await Task.Delay(1500);
+                            progress?.Report(Particles.OfType<IPositionable<float>>().ToList());
+                            DoTick();
+                            _stopwatch.Restart();
+                         //   it++;
+                            //Debug.WriteLine(it);
+                        }, cancellationToken));
+                    
                 }
             }, cancellationToken);
+            
+        }
 
+        protected virtual void OnStepOccured(TimeSpan timeSpan)
+        {
+            StepOccured?.Invoke(this, timeSpan);
         }
     }
 }
