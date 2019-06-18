@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace ClassLibrary1
+namespace Core
 {
     public interface IPositionable<T> where T : struct
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ClassLibrary1
+namespace Core
 {
     public class Simulator
     {

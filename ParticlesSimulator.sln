@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsClientSample", "WindowsFormsClientSample\WindowsFormsClientSample.csproj", "{91A9F4B4-9799-464A-838A-2D82AB71C6F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "ClassLibrary1\Core.csproj", "{50564BA7-D7C4-48E0-ADB5-C384A5A20C56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{50564BA7-D7C4-48E0-ADB5-C384A5A20C56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

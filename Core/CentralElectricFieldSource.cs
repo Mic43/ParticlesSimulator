@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace ClassLibrary1
+namespace Core
 {
     public class CentralElectricFieldSource : IElectricFieldSource<float>, IPositionable<float>, IChargeCarrier<float>
     {

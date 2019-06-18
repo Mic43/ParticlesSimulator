@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary1
+﻿namespace Core
 {
     public static class Constants
     {
