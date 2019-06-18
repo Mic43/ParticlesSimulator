@@ -1,4 +1,6 @@
-﻿namespace Simulator.Core
+﻿using System;
+
+namespace ClassLibrary1
 {
     public interface ITickReceiver
     {

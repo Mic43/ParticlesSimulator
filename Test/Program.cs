@@ -22,7 +22,7 @@ namespace Test
                         ,1)
                            .Cast<ITickReceiver>()
                            .ToList());
-            simulator.Start();
+            //simulator.Start();
         }
     }
 }

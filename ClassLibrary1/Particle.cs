@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace Core
+namespace ClassLibrary1
 {
     public class Particle : IChargeCarrier<float>, ITickReceiver, IPositionable<float>
     { 

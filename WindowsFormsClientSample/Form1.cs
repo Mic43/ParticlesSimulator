@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Core;
@@ -23,7 +24,11 @@ namespace WindowsFormsClientSample
 
         private async void buttonStart_Click(object sender, EventArgs e)
         {
-            await _simulator.Start();
+            await _simulator.StartAsync(CancellationToken.None,
+                new Progress<ICollection<IPositionable<float>>>(collection => 
+                    richTextBoxParams.AppendText(collection.First().ToString())));
+
+            //_simulator.Particles.A
         }
     }
 }

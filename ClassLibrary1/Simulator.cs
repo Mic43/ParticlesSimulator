@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core
+namespace ClassLibrary1
 {
     public class Simulator
     {
@@ -28,18 +29,24 @@ namespace Core
             }   
         }
 
-        public async Task Start()
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            return StartAsync(cancellationToken, null);
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken,IProgress<ICollection<IPositionable<float>>> progress)
         {
             await Task.Run(() =>
             {
                 _stopwatch.Start();
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
+                    progress?.Report(Particles.OfType<IPositionable<float>>().ToList());
                     Tick();
                     _stopwatch.Restart();
-                   // Debug.WriteLine(Particles.Single().ToString());
                 }
-            });
+            }, cancellationToken);
 
         }
     }
