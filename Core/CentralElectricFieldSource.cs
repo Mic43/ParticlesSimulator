@@ -19,7 +19,10 @@ namespace Core
         public Vector<float> GetIntensity(Vector<float> location)
         {
             var distanceVector = (location - Position);
-            var distance = Extensions.Length((Vector<float>) distanceVector);
+            if(distanceVector.Equals(Vector<float>.Zero))
+                return new Vector<float>(float.MaxValue);
+            var distance = distanceVector.Length();
+
             return CoulombConstant * Charge / (distance * distance * distance) * distanceVector; // wektor kierunkowy ?
         }
     }

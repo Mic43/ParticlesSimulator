@@ -46,14 +46,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CentralElectricFieldSource.cs" />
+    <Compile Include="CompoundElectricFieldSource.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Empty.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="IChargeCarrier.cs" />
     <Compile Include="IElectricFieldSource.cs" />
+    <Compile Include="IParticlesProvider.cs" />
     <Compile Include="IPositionable.cs" />
     <Compile Include="ITickReceiver.cs" />
     <Compile Include="Particle.cs" />
+    <Compile Include="ParticlesProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulator.cs" />
   </ItemGroup>
