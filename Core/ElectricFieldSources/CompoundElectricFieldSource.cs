@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace Core
+namespace Core.ElectricFieldSources
 {
     public class CompoundElectricFieldSource<T> : IElectricFieldSource<T> where T : struct
     {

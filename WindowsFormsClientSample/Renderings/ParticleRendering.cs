@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Drawing;
 
-namespace WindowsFormsClientSample
+namespace WindowsFormsClientSample.Renderings
 {
-    class ParticleRedndering : RenderedObject
+    class ParticleRendering : RenderedObject
     {
-        public ParticleRedndering(Point location) : base(location)
+        public ParticleRendering(Point location) : base(location)
         {
         }
 

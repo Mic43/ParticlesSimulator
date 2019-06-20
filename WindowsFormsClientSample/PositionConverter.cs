@@ -6,16 +6,23 @@ namespace WindowsFormsClientSample
 {
     class PositionConverter : IPositionConverter
     {
-        private readonly Func<float, int> _meterToPixel;
+        private readonly int _meterToPixels;
 
-        public PositionConverter(Func<float, int> meterToPixel)
+        public PositionConverter(int meterToPixels)
         {
-            this._meterToPixel = meterToPixel ?? throw new ArgumentNullException(nameof(meterToPixel));
+            if (meterToPixels <= 0) throw new ArgumentOutOfRangeException(nameof(meterToPixels));
+            _meterToPixels = meterToPixels;
         }
 
         public Point ToPixels(Vector<float> particlePosition)
         {
-            return new Point(_meterToPixel(particlePosition[0]), _meterToPixel(particlePosition[1]));
+            return new Point((int) (_meterToPixels * (particlePosition[0])), 
+                (int) (_meterToPixels * (particlePosition[1])));
+        }
+
+        public Vector<float> FromPixels(Point p)
+        {
+            return new Vector<float>(new[] {1.0f / _meterToPixels * p.X, 1.0f / _meterToPixels * p.Y,0,0 });
         }
     }
 }

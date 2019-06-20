@@ -9,7 +9,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsClientSample.Renderings;
 using Core;
+using Core.ElectricFieldSources;
+using Core.ParticlesProviders;
+using Core.Utils;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WindowsFormsClientSample
@@ -17,12 +21,13 @@ namespace WindowsFormsClientSample
     public partial class Form1 : Form
     {
         private Simulator _simulator;
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+     //   private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private Timer _timer;
-        private ParticlesProvider _particlesProvider;
-        private IEnumerable<Particle> _particles;
-        private IEnumerable<IElectricFieldSource<float>> _electricFieldSources;
-        private IPositionConverter _positionConverter = new PositionConverter( m => (int) (500*m));
+        private IParticlesProvider _particlesProvider;
+        private IList<Particle> _particles;
+        private IList<IElectricFieldSource<float>> _electricFieldSources;
+        private readonly IPositionConverter _positionConverter = new PositionConverter(500);
+        private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
 
 
         private List<T> CreateList<T>(Func<T> creator, int repeats)
@@ -52,29 +57,35 @@ namespace WindowsFormsClientSample
         {
             Random rnd = new Random();
 
-            _electricFieldSources = CreateList((() =>
+            _electricFieldSources = CreateList<IElectricFieldSource<float>>((() =>
                     new CentralElectricFieldSource(
                         new Vector<float>(new float[] {(float) (rnd.NextDouble() * 2),
                             (float)(rnd.NextDouble() * 1.5), 0, 0}),
                         (float) Constants.CoulombConstant,
-                        (float) Constants.ElementalCharge / -1000))
-                , 2);
+                        (float) -Constants.ElementalCharge / 10000))
+                , 0);
+            _electricFieldSources.Add(
+                new Electrode(Vector2D.Zero,
+                                Vector2D.One, 50,
+                                (float)Constants.ElementalCharge,
+                                (float)Constants.CoulombConstant / 100000));
 
+            _compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
 
-            var compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
-
-            _particles = CreateList(() => new Particle(compoundElectricFieldSource,
+            _particles = CreateList(() => new Particle(_compoundElectricFieldSource,
                 (float) Constants.ElectronMass,
                 (float) Constants.ElementalCharge,
-                new Vector<float>(new float[] {(float) (rnd.NextDouble()), (float) (rnd.NextDouble()), 0, 0})), 10);
+                new Vector<float>(new float[] {(float) (2*rnd.NextDouble()), (float) (2*rnd.NextDouble()), 0, 0})), 
+                1000);
 
-            _particlesProvider = new ParticlesProvider(_particles);
+            _particlesProvider = new FilterParticlesTooClose(_electricFieldSources.OfType<IPositionable<float>>(), 
+                new ParticlesProvider(_particles),0.02f);
             _simulator = new Simulator(_particlesProvider);
         }
 
         private void OnTimerOnTick(object o, EventArgs args)
         {
-            _simulator.DoTick();
+            _simulator.DoUpdate();
             Render();
            // richTextBox.AppendText(_particles.First().ToString());
         }
@@ -83,9 +94,14 @@ namespace WindowsFormsClientSample
         {
             renderingControl.Particles =
                 _particles
-                    .Select(x => new ParticleRedndering(_positionConverter.ToPixels(x.Position))).Cast<RenderedObject>()
-                    .Union(_electricFieldSources.OfType<IPositionable<float>>()
-                        .Select(x => new ElectricFieldSourceRendering(_positionConverter.ToPixels(x.Position))));
+                    .Select(x => new ParticleRendering(_positionConverter.ToPixels(x.Position))).Cast<RenderedObject>()
+                    .Union(_electricFieldSources.OfType<CentralElectricFieldSource>()
+                        .Select(x => new ElectricFieldSourceRendering(_positionConverter.ToPixels(x.Position))))
+                    .Union(_electricFieldSources.OfType<Electrode>()
+                        .Select(x => new ElectrodeRendering(_positionConverter.ToPixels(x.Position),
+                            _positionConverter.ToPixels(x.EndPosition))));
+
+
             renderingControl.Refresh();
         }
 
@@ -96,7 +112,7 @@ namespace WindowsFormsClientSample
                 components.Dispose();
             }
             base.Dispose(disposing);
-            _cancellationTokenSource.Dispose();
+           
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -116,6 +132,24 @@ namespace WindowsFormsClientSample
 
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
+        }
+
+        private void renderingControl_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                _electricFieldSources.Add(new CentralElectricFieldSource(
+                    _positionConverter.FromPixels(e.Location),
+                    (float) Constants.CoulombConstant,
+                    (float)  Constants.ElementalCharge / 10000));
+            }
+            else
+            {
+                _particles.Add(new Particle(_compoundElectricFieldSource,
+                    (float)Constants.ElectronMass,
+                    (float)Constants.ElementalCharge,
+                    _positionConverter.FromPixels(e.Location)));
+            }
         }
     }
 }

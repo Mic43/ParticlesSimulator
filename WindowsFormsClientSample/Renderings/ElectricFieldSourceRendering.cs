@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace WindowsFormsClientSample
+namespace WindowsFormsClientSample.Renderings
 {
     class ElectricFieldSourceRendering : RenderedObject
     {

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Numerics;
 using Core;
+using Core.ElectricFieldSources;
 
 
 namespace Test

@@ -2,14 +2,14 @@
 
 namespace WindowsFormsClientSample.Renderings
 {
-    public abstract class RenderedObject
+    internal abstract class RenderedObject
     {
         protected RenderedObject(Point location)
         {
             Location = location;
         }
 
-        public Point Location { get; private set; }
+        public Point Location { get; }
         public abstract void Draw(Graphics gr);
     }
 }

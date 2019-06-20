@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsClientSample.Renderings;
 using Core;
 
 namespace WindowsFormsClientSample
 {
-    public partial class RenderingControl : UserControl
+    partial class RenderingControl : UserControl
     {
         public IEnumerable<RenderedObject> Particles { get; set; }
         public IPositionConverter PositionConverter { get; set; }

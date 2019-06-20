@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Core.ElectricFieldSources;
 
 namespace Core
 {
@@ -42,7 +43,7 @@ namespace Core
 
             float elapsedSeconds = (float)elapsed.TotalSeconds;
             var positionChange = acceleration * elapsedSeconds * elapsedSeconds * 0.5f + Velocity* elapsedSeconds;
-            Velocity = acceleration * elapsedSeconds;
+            Velocity+= acceleration * elapsedSeconds;
 
             Position = Position + positionChange;
         }

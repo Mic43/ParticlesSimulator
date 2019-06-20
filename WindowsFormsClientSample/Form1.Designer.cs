@@ -1,4 +1,6 @@
-﻿namespace WindowsFormsClientSample
+﻿using WindowsFormsClientSample.Renderings;
+
+namespace WindowsFormsClientSample
 {
     partial class Form1
     {
@@ -49,10 +51,10 @@
             this.renderingControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderingControl.Location = new System.Drawing.Point(0, 0);
             this.renderingControl.Name = "renderingControl";
-            this.renderingControl.Particles = new WindowsFormsClientSample.RenderedObject[0];
             this.renderingControl.PositionConverter = null;
             this.renderingControl.Size = new System.Drawing.Size(627, 340);
             this.renderingControl.TabIndex = 3;
+            this.renderingControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseClick);
             // 
             // panel1
             // 

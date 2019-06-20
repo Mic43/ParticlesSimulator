@@ -1,17 +1,18 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
+using Core.Utils;
 
-namespace Core
+namespace Core.ElectricFieldSources
 {
-    public class CentralElectricFieldSource : IElectricFieldSource<float>, IPositionable<float>, IChargeCarrier<float>
+    public class CentralElectricFieldSource : Positionable<float>, IElectricFieldSource<float>, IChargeCarrier<float>
     {
-        public Vector<float> Position { get; }
         public float CoulombConstant { get; }
         public float Charge { get; }
 
         public CentralElectricFieldSource(Vector<float> position, float coulombConstant, float charge)
+            : base(position)
         {
 
-            Position = position;
             CoulombConstant = coulombConstant;
             Charge = charge;
         }

@@ -4,10 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.ParticlesProviders;
 
 namespace Core
 {
-    public class Simulator
+    public class Simulator : IRunningTask
     {
         private readonly IParticlesProvider _particlesProvider;
         private readonly Stopwatch _stopwatch = new Stopwatch();
@@ -20,7 +21,7 @@ namespace Core
             _particlesProvider = particlesProvider ?? throw new ArgumentNullException(nameof(particlesProvider));
         }
 
-        public void DoTick()
+        public void DoUpdate()
         {         
             if(!IsStarted)
                 throw new InvalidOperationException("You must start simulation first");

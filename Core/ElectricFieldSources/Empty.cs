@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Core
+namespace Core.ElectricFieldSources
 {
     public class Empty<T> : IElectricFieldSource<T> where T : struct
     {
