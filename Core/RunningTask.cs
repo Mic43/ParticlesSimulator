@@ -15,7 +15,7 @@ namespace Core
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         public bool IsStarted { get; private set; } = false;
-        public Action<TimeSpan> OnUpdate { get; }
+        public Action<TimeSpan> OnUpdate { get; protected set; }
         public TimeSpan TotalTime { get; private set; } = TimeSpan.Zero;
 
         /// <summary>
@@ -25,7 +25,11 @@ namespace Core
         /// of time elapsed since previous call</param>
         public RunningTask(Action<TimeSpan> onUpdate)
         {
-            OnUpdate = onUpdate;
+            OnUpdate = onUpdate ?? throw new ArgumentNullException(nameof(onUpdate));
+        }
+        public RunningTask() : this((ts) => { })
+        {
+           
         }
 
         public void DoUpdate()

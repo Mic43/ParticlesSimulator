@@ -78,8 +78,8 @@ namespace WindowsFormsClientSample
                 () => new Particle(_compoundElectricFieldSource,
                                     (float)Constants.ElectronMass,
                                     (float)Constants.ElementalCharge,
-                new Vector<float>(new float[] { (float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble()), 0, 0 })),
-                storer, TimeSpan.FromSeconds(1));
+                new Vector<float>(new float[] { (float)(1 * rnd.NextDouble()), (float)(1 * rnd.NextDouble()), 0, 0 })),
+                storer, TimeSpan.FromMilliseconds(10));
 
 
             //_particles = CreateList(() => new Particle(_compoundElectricFieldSource,

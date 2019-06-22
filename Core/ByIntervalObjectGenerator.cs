@@ -13,15 +13,10 @@ namespace Core
     /// <typeparam name="T"> type of objects to generate</typeparam>
     public class ByIntervalObjectsGenerator<T> : RunningTask
     {
-        public ByIntervalObjectsGenerator(Func<T> objectsFactory, IObjectsWriter<T> objectsWriter, 
-            TimeSpan interval) 
-            : base( timeSpan =>
-            {
-                // int count = (int)(Math.Round(timeSpan.TotalMilliseconds / interval.TotalMilliseconds));
-                int count = 1;
+        private TimeSpan lastGeneration= TimeSpan.Zero;
 
-                objectsWriter.Put(Utils.Extensions.CreateItems<T>(count, objectsFactory));
-            })
+        public ByIntervalObjectsGenerator(Func<T> objectsFactory, IObjectsWriter<T> objectsWriter,
+            TimeSpan interval)
         {
             if (objectsFactory == null)
             {
@@ -31,8 +26,29 @@ namespace Core
             {
                 throw new ArgumentNullException(nameof(objectsWriter));
             }
+            this.OnUpdate = GenerateObjects;
+            ObjectsFactory = objectsFactory;
+            ObjectsWriter = objectsWriter;
+            Interval = interval;
         }
-       // private int z;
 
+       
+
+        public Func<T> ObjectsFactory { get; }
+        public IObjectsWriter<T> ObjectsWriter { get; }
+        public TimeSpan Interval { get; }
+
+        private void GenerateObjects(TimeSpan timeSpan)
+        {
+            lastGeneration += timeSpan;
+            if (lastGeneration> Interval)
+            {
+                int count = 1;
+                ObjectsWriter.Put(Utils.Extensions.CreateItems<T>(count, ObjectsFactory));
+                lastGeneration -= Interval;
+            }
+          
+        }
     }
+
 }
