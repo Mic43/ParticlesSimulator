@@ -27,6 +27,18 @@ namespace Core.Utils
                 yield return start + vect * (i + 1);
             }
         }
+        public static IEnumerable<T> CreateItems<T>(int count) where T : new()
+        {
+            return CreateItems(count, () => new T());
+        }
+
+        public static IEnumerable<T> CreateItems<T>(int count, Func<T> creator)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                yield return creator();
+            }
+        }
     }
 
 }

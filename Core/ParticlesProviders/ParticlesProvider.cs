@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.ParticlesProviders
 {
-    public class ParticlesProvider : IParticlesProvider
+    public class ParticlesProvider : IObjectsProvider<ITickReceiver>
     {
         private readonly IEnumerable<ITickReceiver> _receivers;
 
@@ -12,7 +12,7 @@ namespace Core.ParticlesProviders
             this._receivers = receivers ?? throw new ArgumentNullException(nameof(receivers));
         }
 
-        public IEnumerable<ITickReceiver> GetParticles()
+        public IEnumerable<ITickReceiver> Get()
         {
             return _receivers;
         }

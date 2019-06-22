@@ -34,8 +34,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.3.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,9 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByIntervalObjectGenerator.cs" />
     <Compile Include="ElectricFieldSources\CentralElectricFieldSource.cs" />
     <Compile Include="ElectricFieldSources\CompoundElectricFieldSource.cs" />
     <Compile Include="IRunningTask.cs" />
+    <Compile Include="ParticlesProviders\IObjectsProvider.cs" />
+    <Compile Include="ParticlesProviders\IObjectsWriter.cs" />
+    <Compile Include="ParticlesProviders\ParticlesStorer.cs" />
+    <Compile Include="RunningTask.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="ElectricFieldSources\Electrode.cs" />
     <Compile Include="ElectricFieldSources\Empty.cs" />
@@ -56,7 +61,6 @@
     <Compile Include="ParticlesProviders\FilterParticlesTooClose.cs" />
     <Compile Include="IChargeCarrier.cs" />
     <Compile Include="ElectricFieldSources\IElectricFieldSource.cs" />
-    <Compile Include="ParticlesProviders\IParticlesProvider.cs" />
     <Compile Include="IPositionable.cs" />
     <Compile Include="ITickReceiver.cs" />
     <Compile Include="Particle.cs" />
@@ -68,6 +72,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
