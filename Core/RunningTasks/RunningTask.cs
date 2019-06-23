@@ -6,7 +6,6 @@ namespace Core.RunningTasks
 
     public class RunningTask : IRunningTask
     {
-
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         public bool IsStarted { get; private set; } = false;
@@ -22,6 +21,7 @@ namespace Core.RunningTasks
         {
             OnUpdate = onUpdate ?? throw new ArgumentNullException(nameof(onUpdate));
         }
+
         public RunningTask() : this((ts) => { })
         {
            

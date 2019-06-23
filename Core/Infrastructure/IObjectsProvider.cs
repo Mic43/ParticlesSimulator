@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.ParticlesProviders
+namespace Core.Infrastructure
 {
-    public interface IObjectsProvider<T>
+    public interface IObjectsProvider<out T>
     {
         IEnumerable<T>  Get();
     }

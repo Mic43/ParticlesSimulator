@@ -45,28 +45,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByIntervalObjectGenerator.cs" />
+    <Compile Include="Infrastructure\IObjectsRemover.cs" />
+    <Compile Include="RunningTasks\ByIntervalObjectGenerator.cs" />
     <Compile Include="ElectricFieldSources\CentralElectricFieldSource.cs" />
     <Compile Include="ElectricFieldSources\CompoundElectricFieldSource.cs" />
-    <Compile Include="IRunningTask.cs" />
-    <Compile Include="ParticlesProviders\IObjectsProvider.cs" />
-    <Compile Include="ParticlesProviders\IObjectsWriter.cs" />
-    <Compile Include="ParticlesProviders\ParticlesStorer.cs" />
-    <Compile Include="RunningTask.cs" />
+    <Compile Include="RunningTasks\ByIntervalRemoveObjects.cs" />
+    <Compile Include="RunningTasks\IRunningTask.cs" />
+    <Compile Include="Infrastructure\IObjectsProvider.cs" />
+    <Compile Include="Infrastructure\IObjectsWriter.cs" />
+    <Compile Include="Infrastructure\ObjectsStore.cs" />
+    <Compile Include="RunningTasks\RunningTask.cs" />
+    <Compile Include="RunningTasks\SequentialCompositeTask.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="ElectricFieldSources\Electrode.cs" />
     <Compile Include="ElectricFieldSources\Empty.cs" />
     <Compile Include="ElectricFieldSources\Positionable.cs" />
     <Compile Include="Utils\Extensions.cs" />
-    <Compile Include="ParticlesProviders\FilterParticlesTooClose.cs" />
     <Compile Include="IChargeCarrier.cs" />
     <Compile Include="ElectricFieldSources\IElectricFieldSource.cs" />
     <Compile Include="IPositionable.cs" />
     <Compile Include="ITickReceiver.cs" />
     <Compile Include="Particle.cs" />
-    <Compile Include="ParticlesProviders\ParticlesProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Simulator.cs" />
+    <Compile Include="RunningTasks\ParticlesUpdater.cs" />
     <Compile Include="Utils\Vector2D.cs" />
   </ItemGroup>
   <ItemGroup>

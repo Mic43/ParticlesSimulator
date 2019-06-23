@@ -1,6 +1,4 @@
-﻿using Core.ParticlesProviders;
-
-namespace Core
+﻿namespace Core.RunningTasks
 {
     public interface IRunningTask
     {

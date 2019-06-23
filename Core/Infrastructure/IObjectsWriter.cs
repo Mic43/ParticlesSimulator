@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.ParticlesProviders
+namespace Core.Infrastructure
 {
-    public interface IObjectsWriter<T>
+    public interface IObjectsWriter<in T>
     {
         void Put(IEnumerable<T> objects);
     }

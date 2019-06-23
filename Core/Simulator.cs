@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Core.ParticlesProviders;
 
-namespace Core
+namespace Core.RunningTasks
 {
 
     public class Simulator : RunningTask
