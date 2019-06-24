@@ -13,6 +13,11 @@ namespace Core.ElectricFieldSources
         {
             ElectricFieldSources = electricFieldSources ?? throw new ArgumentNullException(nameof(electricFieldSources));
         }
+        public CompoundElectricFieldSource(params IElectricFieldSource<T>[] electricFieldSources)
+            : this(electricFieldSources.AsEnumerable())
+        {
+
+        }
 
         public Vector<T> GetIntensity(Vector<T> location)
         {

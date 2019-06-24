@@ -32,6 +32,8 @@ namespace WindowsFormsClientSample
             base.OnPaint(e);
             Graphics graphics = e.Graphics;
 
+            //  Parallel.ForEach(Particles, part => part.Draw(graphics));
+
             foreach (var particle in Particles)
             {
                 particle.Draw(graphics);

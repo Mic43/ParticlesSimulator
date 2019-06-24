@@ -2,7 +2,7 @@
 
 namespace WindowsFormsClientSample
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -51,6 +51,7 @@ namespace WindowsFormsClientSample
             this.renderingControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.renderingControl.Location = new System.Drawing.Point(0, 0);
             this.renderingControl.Name = "renderingControl";
+            this.renderingControl.Particles = new WindowsFormsClientSample.Renderings.RenderedObject[0];
             this.renderingControl.PositionConverter = null;
             this.renderingControl.Size = new System.Drawing.Size(627, 340);
             this.renderingControl.TabIndex = 3;
@@ -75,15 +76,16 @@ namespace WindowsFormsClientSample
             this.richTextBox.TabIndex = 3;
             this.richTextBox.Text = "";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(627, 340);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.renderingControl);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
