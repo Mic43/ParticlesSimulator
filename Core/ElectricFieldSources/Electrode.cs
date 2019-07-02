@@ -26,7 +26,7 @@ namespace Core.ElectricFieldSources
 
             _charges = new CompoundElectricFieldSource<float>(
                 Extensions.CreatePositionsDistribution(Position,EndPosition,chargesCount)
-                    .Select(x=> new CentralElectricFieldSource(x, coulombConstant,singleChargeValue)));
+                    .Select(x=> new CentralElectricFieldSource(x,singleChargeValue, coulombConstant)));
         }
      
         public Vector<float> GetIntensity(Vector<float> location)

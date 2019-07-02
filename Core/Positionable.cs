@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Core.ElectricFieldSources
+namespace Core
 {
     public class Positionable<T> : IPositionable<T> where T : struct
     {
@@ -13,7 +13,7 @@ namespace Core.ElectricFieldSources
             Position = position;
         }
 
-        public Vector<T> Position { get; }
+        public Vector<T> Position { get; protected set; }
 
     }
 }

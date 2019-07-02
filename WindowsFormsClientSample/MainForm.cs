@@ -28,7 +28,7 @@ namespace WindowsFormsClientSample
         private readonly IList<IElectricFieldSource<float>> _electricFieldSources =
             new List<IElectricFieldSource<float>>();
         private readonly IPositionConverter _positionConverter = new PositionConverter(500);
-        private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
+     //   private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
         //private IRunningTask _particlesGenerator;
 
         private List<T> CreateList<T>(Func<T> creator, int repeats)
@@ -73,27 +73,27 @@ namespace WindowsFormsClientSample
             //            (float) -Constants.ElementalCharge / 10000))
             //    , 0);
 
-            _electricFieldSources.Add(
-                new Electrode(Vector2D.Zero,
-                                Vector2D.One, 50,
-                                (float)Constants.ElementalCharge / 100000,
-                                (float)Constants.CoulombConstant));
+            //_electricFieldSources.Add(
+            //    new Electrode(Vector2D.Zero,
+            //                    Vector2D.One, 50,
+            //                    (float)Constants.ElementalCharge / 100000,
+            //                    (float)Constants.CoulombConstant));
 
-            _compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
+         //   _compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
 
             _simulator = new SequentialCompositeTask(
-                new ByIntervalObjectsGenerator<Particle>(
-                    () => new Particle(_compoundElectricFieldSource,
-                        (float) Constants.ElectronMass,
-                        (float) Constants.ElementalCharge,
-                        Vector2D.Create(1.5f,0.5f)),
-                    _store, TimeSpan.FromMilliseconds(200)),
-                new ByIntervalObjectsGenerator<Particle>(
-                    () => new Particle(_compoundElectricFieldSource,
-                        (float) Constants.ElectronMass,
-                        (float) Constants.ElementalCharge,
-                        Vector2D.Create(1.3f,0.3f)), 
-                    _store, TimeSpan.FromMilliseconds(100)),
+                //new ByIntervalObjectsGenerator<Particle>(
+                //    () => new Particle(_compoundElectricFieldSource,
+                //        (float) Constants.ElectronMass,
+                //        (float) Constants.ElementalCharge,
+                //        position: Vector2D.Create(1.5f,0.5f)),
+                //    _store, TimeSpan.FromMilliseconds(200)),
+                //new ByIntervalObjectsGenerator<Particle>(
+                //    () => new Particle(_compoundElectricFieldSource,
+                //        (float) Constants.ElectronMass,
+                //        (float) Constants.ElementalCharge,
+                //        position: Vector2D.Create(1.3f,0.3f)), 
+                //    _store, TimeSpan.FromMilliseconds(100)),
                 new ByIntervalRemoveObjects<IPositionable<float>>(_store,_store,    
                     particle =>
                         //_compoundElectricFieldSource.ElectricFieldSources
@@ -102,15 +102,24 @@ namespace WindowsFormsClientSample
                         //||  
                         !IsInBounds(particle)
                     ,TimeSpan.FromMilliseconds(2000)),
-                new ParticlesUpdater(_store) { SimulationSpeed = 0.2f});
+                new ParticlesUpdater(_store) { SimulationSpeed = 0.1f});
 
 
-            _store.Put(CreateList(() => new Particle(_compoundElectricFieldSource,
-                (float)Constants.ElectronMass,
-                (float)Constants.ElementalCharge,
-                new Vector<float>(new float[] { (float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble()), 0, 0 })),
-                10000));
+            _store.Put(CreateList(() =>
+                {
+                    var newPart = new Particle(                 
+                        (float)Constants.ElectronMass,
+                        (float)Constants.ElementalCharge ,
+                        position: Vector2D.Create((float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble())));
+                    newPart.ElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources,newPart);
+                    return newPart;
+                },
+                200));
 
+            foreach (var particle in _store.Get())
+            {
+                _electricFieldSources.Add(particle);
+            }
             //_particlesProvider = new FilterParticlesTooClose(_electricFieldSources.OfType<IPositionable<float>>(), 
             //    new ParticlesProvider(_particles),0.02f);
 
@@ -207,15 +216,14 @@ namespace WindowsFormsClientSample
             {
                 _electricFieldSources.Add(new CentralElectricFieldSource(
                     _positionConverter.FromPixels(e.Location),
-                    (float) Constants.CoulombConstant,
-                    (float)  Constants.ElementalCharge / 10000));
+                    (float)  Constants.ElementalCharge / 10000, (float) Constants.CoulombConstant));
             }
             else
             {
-                _store.Put(Enumerable.Repeat( new Particle(_compoundElectricFieldSource,
-                    (float)Constants.ElectronMass,
-                    (float)Constants.ElementalCharge,
-                    _positionConverter.FromPixels(e.Location)),1));
+                //_store.Put(Enumerable.Repeat( new Particle(_compoundElectricFieldSource,
+                //    (float)Constants.ElectronMass,
+                //    (float)Constants.ElementalCharge,
+                //    position: _positionConverter.FromPixels(e.Location)),1));
             }
 
             Render();

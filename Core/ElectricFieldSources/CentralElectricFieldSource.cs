@@ -9,7 +9,8 @@ namespace Core.ElectricFieldSources
         public float CoulombConstant { get; }
         public float Charge { get; }
 
-        public CentralElectricFieldSource(Vector<float> position, float coulombConstant, float charge)
+        public CentralElectricFieldSource(Vector<float> position, float charge, 
+            float coulombConstant =(float) Constants.CoulombConstant)
             : base(position)
         {
             if (coulombConstant <= 0) throw new ArgumentOutOfRangeException(nameof(coulombConstant));
