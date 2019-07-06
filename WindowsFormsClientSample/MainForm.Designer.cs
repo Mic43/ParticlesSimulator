@@ -20,9 +20,10 @@ namespace WindowsFormsClientSample
         {
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
-            this.renderingControl = new WindowsFormsClientSample.RenderingControl();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonRestart = new System.Windows.Forms.Button();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.renderingControl = new WindowsFormsClientSample.RenderingControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,27 +47,27 @@ namespace WindowsFormsClientSample
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
-            // renderingControl
-            // 
-            this.renderingControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.renderingControl.Location = new System.Drawing.Point(0, 0);
-            this.renderingControl.Name = "renderingControl";
-            this.renderingControl.Particles = new WindowsFormsClientSample.Renderings.RenderedObject[0];
-            this.renderingControl.PositionConverter = null;
-            this.renderingControl.Size = new System.Drawing.Size(673, 359);
-            this.renderingControl.TabIndex = 3;
-            this.renderingControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseClick);
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonRestart);
             this.panel1.Controls.Add(this.richTextBox);
             this.panel1.Controls.Add(this.buttonStart);
             this.panel1.Controls.Add(this.buttonStop);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(397, 0);
+            this.panel1.Location = new System.Drawing.Point(351, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(276, 359);
+            this.panel1.Size = new System.Drawing.Size(276, 340);
             this.panel1.TabIndex = 5;
+            // 
+            // buttonRestart
+            // 
+            this.buttonRestart.Location = new System.Drawing.Point(104, 27);
+            this.buttonRestart.Name = "buttonRestart";
+            this.buttonRestart.Size = new System.Drawing.Size(75, 23);
+            this.buttonRestart.TabIndex = 4;
+            this.buttonRestart.Text = "Restart";
+            this.buttonRestart.UseVisualStyleBackColor = true;
+            this.buttonRestart.Click += new System.EventHandler(this.buttonRestart_Click);
             // 
             // richTextBox
             // 
@@ -76,11 +77,24 @@ namespace WindowsFormsClientSample
             this.richTextBox.TabIndex = 3;
             this.richTextBox.Text = "";
             // 
+            // renderingControl
+            // 
+            this.renderingControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.renderingControl.Location = new System.Drawing.Point(0, 0);
+            this.renderingControl.Name = "renderingControl";
+            this.renderingControl.Particles = new WindowsFormsClientSample.Renderings.RenderedObject[0];
+            this.renderingControl.PositionConverter = null;
+            this.renderingControl.Size = new System.Drawing.Size(627, 340);
+            this.renderingControl.TabIndex = 3;
+            this.renderingControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseClick);
+            this.renderingControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseDown);
+            this.renderingControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseMove);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(673, 359);
+            this.ClientSize = new System.Drawing.Size(627, 340);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.renderingControl);
             this.Name = "MainForm";
@@ -97,6 +111,7 @@ namespace WindowsFormsClientSample
         private RenderingControl renderingControl;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.Button buttonRestart;
     }
 }
 

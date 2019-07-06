@@ -45,10 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collisions\ICollisionsResolver.cs" />
     <Compile Include="Infrastructure\IObjectsRemover.cs" />
     <Compile Include="RunningTasks\ByIntervalObjectGenerator.cs" />
     <Compile Include="ElectricFieldSources\CentralElectricFieldSource.cs" />
     <Compile Include="ElectricFieldSources\CompoundElectricFieldSource.cs" />
+    <Compile Include="RunningTasks\ByIntervalPerform.cs" />
     <Compile Include="RunningTasks\ByIntervalRemoveObjects.cs" />
     <Compile Include="RunningTasks\IRunningTask.cs" />
     <Compile Include="Infrastructure\IObjectsProvider.cs" />
@@ -58,8 +60,8 @@
     <Compile Include="RunningTasks\SequentialCompositeTask.cs" />
     <Compile Include="Utils\Constants.cs" />
     <Compile Include="ElectricFieldSources\Electrode.cs" />
-    <Compile Include="ElectricFieldSources\Empty.cs" />
-    <Compile Include="ElectricFieldSources\Positionable.cs" />
+    <Compile Include="ElectricFieldSources\EmptyElectricFieldSource.cs" />
+    <Compile Include="Positionable.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="IChargeCarrier.cs" />
     <Compile Include="ElectricFieldSources\IElectricFieldSource.cs" />

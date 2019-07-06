@@ -23,13 +23,15 @@ namespace WindowsFormsClientSample
     public partial class MainForm : Form
     {
         private IRunningTask _simulator;
-        private Timer _timer;
-        private readonly ObjectsStore<Particle> _store = new ObjectsStore<Particle>();
+        private ObjectsStore<Particle> _store = new ObjectsStore<Particle>();
         private readonly IList<IElectricFieldSource<float>> _electricFieldSources =
             new List<IElectricFieldSource<float>>();
         private readonly IPositionConverter _positionConverter = new PositionConverter(500);
-        private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
+        //   private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
         //private IRunningTask _particlesGenerator;
+
+        private bool _stopSimulation = false;
+        private readonly Random _random = new Random();
 
         private List<T> CreateList<T>(Func<T> creator, int repeats)
         {
@@ -44,16 +46,10 @@ namespace WindowsFormsClientSample
         public MainForm()
         {
             InitializeComponent();
-
             CreateAndSetupSimulation();
-            SetupRendererTimer();
         }
 
-        private void SetupRendererTimer()
-        {
-           // _timer = new Timer() {Interval = 25};
-          //  _timer.Tick += OnTimerOnTick;
-        }
+       
 
         private float minimalDistance = 0.02f;
         private bool AreTooClose(IPositionable<float> pos, IPositionable<float> part)
@@ -63,63 +59,58 @@ namespace WindowsFormsClientSample
 
         private void CreateAndSetupSimulation()
         {
-              Random rnd = new Random();
-
-            //_electricFieldSources = CreateList<IElectricFieldSource<float>>((() =>
-            //        new CentralElectricFieldSource(
-            //            new Vector<float>(new float[] {(float) (rnd.NextDouble() * 2),
-            //                (float)(rnd.NextDouble() * 1.5), 0, 0}),
-            //            (float) Constants.CoulombConstant,
-            //            (float) -Constants.ElementalCharge / 10000))
-            //    , 0);
+              _store = new ObjectsStore<Particle>();
+              _electricFieldSources.Clear();
 
             _electricFieldSources.Add(
                 new Electrode(Vector2D.Zero,
                                 Vector2D.One, 50,
-                                -(float)Constants.ElementalCharge / 100000,
+                                -(float)Constants.ElementalCharge,
                                 (float)Constants.CoulombConstant));
 
-            //_electricFieldSources.Add(
-            //  new Electrode(Vector2D.Zero,
-            //                  Vector2D.One, 50,
-            //                  (float)Constants.ElementalCharge / 100000,
-            //                  (float)Constants.CoulombConstant));
-
-            _compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
 
             _simulator = new SequentialCompositeTask(
-                new ByIntervalObjectsGenerator<Particle>(
-                    () => new Particle(_compoundElectricFieldSource,
-                        (float) Constants.ElectronMass,
-                        (float) Constants.ElementalCharge,
-                        Vector2D.Create(1.5f,0.5f)),
-                    _store, TimeSpan.FromMilliseconds(200)),
-                new ByIntervalObjectsGenerator<Particle>(
-                    () => new Particle(_compoundElectricFieldSource,
-                        (float) Constants.ElectronMass,
-                        (float) Constants.ElementalCharge,
-                        Vector2D.Create(1.3f,0.3f)), 
-                    _store, TimeSpan.FromMilliseconds(100)),
-                new ByIntervalRemoveObjects<IPositionable<float>>(_store,_store,    
-                    particle =>
-                        _compoundElectricFieldSource.ElectricFieldSources
-                            .OfType<IPositionable<float>>()
-                            .Any(part => AreTooClose(part, particle))
-                        ||
-                        !IsInBounds(particle)
-                    ,TimeSpan.FromMilliseconds(10)),
-                new ParticlesUpdater(_store) { SimulationSpeed = 0.1f});
+               // new ByIntervalPerform<Particle>(
+               //     TimeSpan.FromMilliseconds(200),
+               //     () => { AddParticle(Vector2D.Create(1.5f, 0.5f), Constants.ElementalCharge); }),
+               //new ByIntervalPerform<Particle>(
+               //     TimeSpan.FromMilliseconds(400),
+               //     () => { AddParticle(Vector2D.Create(0.5f, 1.5f), Constants.ElementalCharge); }),
+                new ByIntervalPerform<IPositionable<float>>(TimeSpan.FromMilliseconds(2000),
+                    () =>
+                    {
+                        foreach (var particle in _store.Get())
+                        {
+                            if (!IsInBounds(particle))
+                                _electricFieldSources.Remove(particle);
+                        }
+                        _store.Remove((part) => !IsInBounds(part));
+                    }),
+                new ParticlesUpdater(_store) { SimulationSpeed = 0.001f});
 
 
-            //_store.Put(CreateList(() => new Particle(_compoundElectricFieldSource,
-            //    (float)Constants.ElectronMass,
-            //    (float)Constants.ElementalCharge,
-            //    new Vector<float>(new float[] { (float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble()), 0, 0 })),
-            //    10000));
+            //_store.Put(CreateList(() =>
+            //    {
+            //        var newPart = new Particle(                 
+            //            (float)Constants.ElectronMass,
+            //            (float)Constants.ElementalCharge ,
+            //            position: Vector2D.Create((float)(2 * _random.NextDouble()), (float)(2 * _random.NextDouble())));
+            //        newPart.ElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources,newPart);
+            //        return newPart;
+            //    },
+            //    200));
 
-            //_particlesProvider = new FilterParticlesTooClose(_electricFieldSources.OfType<IPositionable<float>>(), 
-            //    new ParticlesProvider(_particles),0.02f);
+        }
 
+        private void AddParticle(Vector<float> position, double charge)
+        {
+            var newPart = new Particle(
+                (float) Constants.ElectronMass,
+                (float) charge,
+                position: position);
+            newPart.ElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources, newPart);
+            _electricFieldSources.Add(newPart);
+            _store.Put(Extensions.Single(newPart));
         }
 
         private bool IsInBounds(IPositionable<float> particle)
@@ -128,10 +119,37 @@ namespace WindowsFormsClientSample
              && Vector.LessThanOrEqualAll(particle.Position, _positionConverter.FromPixels(new Point(renderingControl.Size)));
         }
 
-        private void OnTimerOnTick(object o, EventArgs args)
+        private void StartSimulation()
         {
-            _simulator.DoUpdate();
-            Render();
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = true;
+            _stopSimulation = false;
+
+            _simulator.Start();
+
+            Stopwatch sw = new Stopwatch();
+            while (!_stopSimulation)
+            {
+                _simulator.DoUpdate();
+                DisplayInfo();
+                sw.Restart();
+                Render();
+                Application.DoEvents();
+            }
+
+            void DisplayInfo()
+            {
+                richTextBox.Text = $@"FPS: {(1.0 / sw.Elapsed.TotalSeconds):F} Particles: {_store.Get().Count()}";
+            }
+        }
+
+        private void StopSimulation()
+        {
+            _simulator.Stop();
+
+            buttonStart.Enabled = true;
+            buttonStop.Enabled = false;
+            _stopSimulation = true;
         }
 
         private void Render()
@@ -139,7 +157,8 @@ namespace WindowsFormsClientSample
             renderingControl.Particles =
                 _store.Get().OfType<IPositionable<float>>()
                     .Select(x => new ParticleRendering(_positionConverter.ToPixels(x.Position))).Cast<RenderedObject>()
-                    .Union(_electricFieldSources.OfType<CentralElectricFieldSource>()
+
+                    .Union(_electricFieldSources.OfType<CentralElectricFieldSource>().Where(x=>! (x is Particle))
                         .Select(x => new ElectricFieldSourceRendering(_positionConverter.ToPixels(x.Position))))
                     .Union(_electricFieldSources.OfType<Electrode>()
                         .Select(x => new ElectrodeRendering(_positionConverter.ToPixels(x.Position),
@@ -148,6 +167,7 @@ namespace WindowsFormsClientSample
 
             renderingControl.Refresh();
         }
+
 
         protected override void Dispose(bool disposing)
         {
@@ -158,78 +178,56 @@ namespace WindowsFormsClientSample
             base.Dispose(disposing);
            
         }
-        
+
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            buttonStart.Enabled = false;
-            buttonStop.Enabled = true;
-            _stop = false;
-          //  CreateAndSetupSimulation();
-
-            _simulator.Start();
-          
-            //await MainLoop();
-             Stopwatch sw = new Stopwatch();
-            while (!_stop)
-            {
-                _simulator.DoUpdate();
-                richTextBox.Text = $@"FPS: {(1.0 / sw.Elapsed.TotalSeconds):F} Particles: {_store.Get().Count()}";
-                sw.Restart();
-                Render();
-                Application.DoEvents();
-            }
-            // _timer.Start();
+            StartSimulation();
         }
-
-        //private async Task MainLoop()
-        //{
-        //    Stopwatch sw = new Stopwatch();
-        //    await Task.Run(() =>
-        //    {
-        //        while (!stop)
-        //        {
-        //            _simulator.DoUpdate();
-        //            richTextBox.Text = $@"FPS: {(1.0 / sw.Elapsed.TotalSeconds):F} Particles: {_store.Get().Count()}";
-        //            sw.Restart();
-        //            Render();
-        //            //Application.DoEvents();
-        //        }
-        //    });
-        //}
-        private bool _stop = false;
+     
         private void buttonStop_Click(object sender, EventArgs e)
         {
-          //  _timer.Stop();
-            _simulator.Stop();
-
-            buttonStart.Enabled = true;
-            buttonStop.Enabled = false;
-            _stop = true;
+            StopSimulation();
         }
 
         private void renderingControl_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right) // zrodlo pola
+            if (e.Button == MouseButtons.Right)
             {
                 _electricFieldSources.Add(new CentralElectricFieldSource(
                     _positionConverter.FromPixels(e.Location),
-                    (float) Constants.CoulombConstant,
-                    (float)  - Constants.ElementalCharge / 10000));
-            }
-            else // czastka
-            {
-                _store.Put(Enumerable.Repeat( new Particle(_compoundElectricFieldSource,
-                    (float)Constants.ElectronMass,
-                    (float)Constants.ElementalCharge,
-                    _positionConverter.FromPixels(e.Location)),1));
+                    (float)  Constants.ElementalCharge));
             }
 
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            //}
             Render();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _stop = true;
+            _stopSimulation = true;
+        }
+
+        private void buttonRestart_Click(object sender, EventArgs e)
+        {
+            StopSimulation();
+            CreateAndSetupSimulation();
+            StartSimulation();
+        }
+
+        private void renderingControl_MouseDown(object sender, MouseEventArgs e)
+        {
+          
+        }
+
+        private void renderingControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+
+            AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            Render();
         }
     }
 }

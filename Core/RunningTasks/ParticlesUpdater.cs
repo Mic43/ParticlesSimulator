@@ -22,17 +22,15 @@ namespace Core.RunningTasks
 
         public ParticlesUpdater(IObjectsProvider<ITickReceiver> particlesProvider)
         {
-            //Parallel.ForEach<ITickReceiver>(particlesProvider.Get(),
-            //    (particle) => particle.OnTick(timespan));
             OnUpdate = (timespan =>
             {
-                //foreach (var particle in particlesProvider.Get())
+                //foreach (var tickReceiver in particlesProvider.Get())
                 //{
-                //    particle.OnTick(TimeSpan.FromMilliseconds(SimulationSpeed * timespan.TotalMilliseconds));
+                //    tickReceiver.OnTick(TimeSpan.FromTicks((long) (SimulationSpeed * timespan.Ticks)));
                 //}
 
-                Parallel.ForEach<ITickReceiver>(particlesProvider.Get(),
-                    (particle) => particle.OnTick(TimeSpan.FromMilliseconds(SimulationSpeed * timespan.TotalMilliseconds)));
+                Parallel.ForEach(particlesProvider.Get(),
+                    (particle) => particle.OnTick(TimeSpan.FromTicks((long)(SimulationSpeed * timespan.Ticks))));
             });
 
         }

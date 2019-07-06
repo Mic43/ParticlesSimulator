@@ -1,37 +1,44 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using Core.ElectricFieldSources;
+using Core.Utils;
 
 namespace Core
 {
-    public class Particle : IChargeCarrier<float>, ITickReceiver, IPositionable<float>
-    { 
-        public float Charge { get;  }
-        public float Mass { get; }
-        public Vector<float> Position { get; private set; }
-        public IElectricFieldSource<float> ElectricFieldSource { get;}
+    public class Particle : CentralElectricFieldSource, ITickReceiver
+    {
+        private IElectricFieldSource<float> _electricFieldSource;
+        public IElectricFieldSource<float> ElectricFieldSource
+        {
+            get => _electricFieldSource;
+            set => _electricFieldSource = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        public float Mass { get; set; }
         public Vector<float> Velocity { get; private set; }
 
         public Particle(float mass,
             float charge = 0.0f,
+            float coulombConstant = (float)Constants.CoulombConstant,
             Vector<float> position = default(Vector<float>),
             Vector<float> initialVelocity = default(Vector<float>)) 
-            : this(new Empty<float>(), mass, charge, position, initialVelocity)
+            : this(new EmptyElectricFieldSource<float>(), mass,charge,
+                coulombConstant, position: position, initialVelocity: initialVelocity)
         {
         }
 
         public Particle(IElectricFieldSource<float> electricFieldSource,
             float mass,
             float charge = 0.0f,
+            float coulombConstant = (float)Constants.CoulombConstant,
             Vector<float> position = default(Vector<float>),
-            Vector<float> initialVelocity = default(Vector<float>))
+            Vector<float> initialVelocity = default(Vector<float>)) : base(position,charge, coulombConstant)
         {
             if (mass <= 0) throw new ArgumentOutOfRangeException(nameof(mass));
 
-            Position = position;
-            Charge = charge;
             Mass = mass;
-            ElectricFieldSource = electricFieldSource ?? throw new ArgumentNullException(nameof(electricFieldSource));
+            _electricFieldSource = electricFieldSource ?? throw new ArgumentNullException(nameof(electricFieldSource));
             Velocity = initialVelocity;
         }
 
@@ -43,6 +50,8 @@ namespace Core
 
             float elapsedSeconds = (float)elapsed.TotalSeconds;
             var positionChange = acceleration * elapsedSeconds * elapsedSeconds * 0.5f + Velocity* elapsedSeconds;
+           // Debug.AutoFlush = true;
+          //  Debug.WriteLine(positionChange);
             Velocity+= acceleration * elapsedSeconds;
 
             Position = Position + positionChange;

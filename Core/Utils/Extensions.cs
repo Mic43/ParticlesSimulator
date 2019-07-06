@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Core.Utils
@@ -38,6 +39,10 @@ namespace Core.Utils
             {
                 yield return creator();
             }
+        }
+        public static IEnumerable<T> Single<T>( T element)
+        {
+            return Enumerable.Repeat(element, 1);
         }
     }
 

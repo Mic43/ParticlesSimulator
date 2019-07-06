@@ -7,33 +7,26 @@ namespace Core.RunningTasks
     /// 
     /// </summary>
     /// <typeparam name="T"> type of objects to generate</typeparam>
-    public class ByIntervalObjectsGenerator<T> : RunningTask
+    public class ByIntervalObjectsGenerator<T> : ByIntervalPerform<T>
     {
-        private TimeSpan _lastGeneration= TimeSpan.Zero;
 
         public IObjectsWriter<T> ObjectsWriter { get; }
         public Func<T> ObjectsFactory { get; }
-        public TimeSpan Interval { get; }
 
         public ByIntervalObjectsGenerator(Func<T> objectsFactory, IObjectsWriter<T> objectsWriter,
-            TimeSpan interval)
+            TimeSpan interval) : base(interval)
         {
-            OnUpdate = GenerateObjects;
             ObjectsFactory = objectsFactory ?? throw new ArgumentNullException(nameof(objectsFactory));
             ObjectsWriter = objectsWriter ?? throw new ArgumentNullException(nameof(objectsWriter));
-            Interval = interval;
+            ActionToPerform = GenerateObjects;
         }
 
-        private void GenerateObjects(TimeSpan timeSpan)
+        private void GenerateObjects()
         {
-            _lastGeneration += timeSpan;
-            if (_lastGeneration> Interval)
-            {
-                int count = 1;
-                ObjectsWriter.Put(Utils.Extensions.CreateItems<T>(count, ObjectsFactory));
-                _lastGeneration -= Interval;
-            }
-          
+            //TODO: proper count calucaltion
+            int count = 1;
+            ObjectsWriter.Put(Utils.Extensions.CreateItems<T>(count, ObjectsFactory));
+           
         }
     }
 

@@ -2,7 +2,7 @@
 
 namespace Core.ElectricFieldSources
 {
-    public class Empty<T> : IElectricFieldSource<T> where T : struct
+    public class EmptyElectricFieldSource<T> : IElectricFieldSource<T> where T : struct
     {
         public Vector<T> GetIntensity(Vector<T> location)
         {
