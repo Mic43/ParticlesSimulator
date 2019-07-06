@@ -20,9 +20,10 @@ namespace WindowsFormsClientSample
         {
             this.buttonStart = new System.Windows.Forms.Button();
             this.buttonStop = new System.Windows.Forms.Button();
-            this.renderingControl = new WindowsFormsClientSample.RenderingControl();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonRestart = new System.Windows.Forms.Button();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.renderingControl = new WindowsFormsClientSample.RenderingControl();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +47,36 @@ namespace WindowsFormsClientSample
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.buttonRestart);
+            this.panel1.Controls.Add(this.richTextBox);
+            this.panel1.Controls.Add(this.buttonStart);
+            this.panel1.Controls.Add(this.buttonStop);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(351, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(276, 340);
+            this.panel1.TabIndex = 5;
+            // 
+            // buttonRestart
+            // 
+            this.buttonRestart.Location = new System.Drawing.Point(104, 27);
+            this.buttonRestart.Name = "buttonRestart";
+            this.buttonRestart.Size = new System.Drawing.Size(75, 23);
+            this.buttonRestart.TabIndex = 4;
+            this.buttonRestart.Text = "Restart";
+            this.buttonRestart.UseVisualStyleBackColor = true;
+            this.buttonRestart.Click += new System.EventHandler(this.buttonRestart_Click);
+            // 
+            // richTextBox
+            // 
+            this.richTextBox.Location = new System.Drawing.Point(23, 85);
+            this.richTextBox.Name = "richTextBox";
+            this.richTextBox.Size = new System.Drawing.Size(241, 243);
+            this.richTextBox.TabIndex = 3;
+            this.richTextBox.Text = "";
+            // 
             // renderingControl
             // 
             this.renderingControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -56,25 +87,8 @@ namespace WindowsFormsClientSample
             this.renderingControl.Size = new System.Drawing.Size(627, 340);
             this.renderingControl.TabIndex = 3;
             this.renderingControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseClick);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.richTextBox);
-            this.panel1.Controls.Add(this.buttonStart);
-            this.panel1.Controls.Add(this.buttonStop);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(351, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(276, 340);
-            this.panel1.TabIndex = 5;
-            // 
-            // richTextBox
-            // 
-            this.richTextBox.Location = new System.Drawing.Point(23, 85);
-            this.richTextBox.Name = "richTextBox";
-            this.richTextBox.Size = new System.Drawing.Size(241, 243);
-            this.richTextBox.TabIndex = 3;
-            this.richTextBox.Text = "";
+            this.renderingControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseDown);
+            this.renderingControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseMove);
             // 
             // MainForm
             // 
@@ -97,6 +111,7 @@ namespace WindowsFormsClientSample
         private RenderingControl renderingControl;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.Button buttonRestart;
     }
 }
 

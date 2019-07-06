@@ -45,10 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collisions\ICollisionsResolver.cs" />
     <Compile Include="Infrastructure\IObjectsRemover.cs" />
     <Compile Include="RunningTasks\ByIntervalObjectGenerator.cs" />
     <Compile Include="ElectricFieldSources\CentralElectricFieldSource.cs" />
     <Compile Include="ElectricFieldSources\CompoundElectricFieldSource.cs" />
+    <Compile Include="RunningTasks\ByIntervalPerform.cs" />
     <Compile Include="RunningTasks\ByIntervalRemoveObjects.cs" />
     <Compile Include="RunningTasks\IRunningTask.cs" />
     <Compile Include="Infrastructure\IObjectsProvider.cs" />
