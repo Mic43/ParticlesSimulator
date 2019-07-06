@@ -76,8 +76,14 @@ namespace WindowsFormsClientSample
             _electricFieldSources.Add(
                 new Electrode(Vector2D.Zero,
                                 Vector2D.One, 50,
-                                (float)Constants.ElementalCharge / 100000,
+                                -(float)Constants.ElementalCharge / 100000,
                                 (float)Constants.CoulombConstant));
+
+            //_electricFieldSources.Add(
+            //  new Electrode(Vector2D.Zero,
+            //                  Vector2D.One, 50,
+            //                  (float)Constants.ElementalCharge / 100000,
+            //                  (float)Constants.CoulombConstant));
 
             _compoundElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources);
 
@@ -96,20 +102,20 @@ namespace WindowsFormsClientSample
                     _store, TimeSpan.FromMilliseconds(100)),
                 new ByIntervalRemoveObjects<IPositionable<float>>(_store,_store,    
                     particle =>
-                        //_compoundElectricFieldSource.ElectricFieldSources
-                        //    .OfType<IPositionable<float>>()
-                        //    .Any(part => AreTooClose(part, particle))
-                        //||  
+                        _compoundElectricFieldSource.ElectricFieldSources
+                            .OfType<IPositionable<float>>()
+                            .Any(part => AreTooClose(part, particle))
+                        ||
                         !IsInBounds(particle)
-                    ,TimeSpan.FromMilliseconds(2000)),
-                new ParticlesUpdater(_store) { SimulationSpeed = 0.2f});
+                    ,TimeSpan.FromMilliseconds(10)),
+                new ParticlesUpdater(_store) { SimulationSpeed = 0.1f});
 
 
-            _store.Put(CreateList(() => new Particle(_compoundElectricFieldSource,
-                (float)Constants.ElectronMass,
-                (float)Constants.ElementalCharge,
-                new Vector<float>(new float[] { (float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble()), 0, 0 })),
-                10000));
+            //_store.Put(CreateList(() => new Particle(_compoundElectricFieldSource,
+            //    (float)Constants.ElectronMass,
+            //    (float)Constants.ElementalCharge,
+            //    new Vector<float>(new float[] { (float)(2 * rnd.NextDouble()), (float)(2 * rnd.NextDouble()), 0, 0 })),
+            //    10000));
 
             //_particlesProvider = new FilterParticlesTooClose(_electricFieldSources.OfType<IPositionable<float>>(), 
             //    new ParticlesProvider(_particles),0.02f);
@@ -203,14 +209,14 @@ namespace WindowsFormsClientSample
 
         private void renderingControl_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right) // zrodlo pola
             {
                 _electricFieldSources.Add(new CentralElectricFieldSource(
                     _positionConverter.FromPixels(e.Location),
                     (float) Constants.CoulombConstant,
-                    (float)  Constants.ElementalCharge / 10000));
+                    (float)  - Constants.ElementalCharge / 10000));
             }
-            else
+            else // czastka
             {
                 _store.Put(Enumerable.Repeat( new Particle(_compoundElectricFieldSource,
                     (float)Constants.ElectronMass,

@@ -6,6 +6,7 @@ namespace Core.ElectricFieldSources
 {
     public class CentralElectricFieldSource : Positionable<float>, IElectricFieldSource<float>, IChargeCarrier<float>
     {
+       
         public float CoulombConstant { get; }
         public float Charge { get; }
 

@@ -53,7 +53,7 @@ namespace WindowsFormsClientSample
             this.renderingControl.Name = "renderingControl";
             this.renderingControl.Particles = new WindowsFormsClientSample.Renderings.RenderedObject[0];
             this.renderingControl.PositionConverter = null;
-            this.renderingControl.Size = new System.Drawing.Size(627, 340);
+            this.renderingControl.Size = new System.Drawing.Size(673, 359);
             this.renderingControl.TabIndex = 3;
             this.renderingControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.renderingControl_MouseClick);
             // 
@@ -63,9 +63,9 @@ namespace WindowsFormsClientSample
             this.panel1.Controls.Add(this.buttonStart);
             this.panel1.Controls.Add(this.buttonStop);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(351, 0);
+            this.panel1.Location = new System.Drawing.Point(397, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(276, 340);
+            this.panel1.Size = new System.Drawing.Size(276, 359);
             this.panel1.TabIndex = 5;
             // 
             // richTextBox
@@ -80,7 +80,7 @@ namespace WindowsFormsClientSample
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(627, 340);
+            this.ClientSize = new System.Drawing.Size(673, 359);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.renderingControl);
             this.Name = "MainForm";

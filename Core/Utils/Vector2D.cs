@@ -4,6 +4,7 @@ namespace Core.Utils
 {
     public static class Vector2D
     {
+        
         public static Vector<float> Create(float x, float y)
         {
             return new Vector<float>(new float[] {x,y,0,0});
