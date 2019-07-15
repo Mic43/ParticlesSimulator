@@ -45,7 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collisions\Collision.cs" />
+    <Compile Include="Collisions\DebugCollisionsResolver.cs" />
+    <Compile Include="Collisions\EmptyCollisionResolver.cs" />
+    <Compile Include="Collisions\ICollider.cs" />
+    <Compile Include="Collisions\ICollisionsDetector.cs" />
     <Compile Include="Collisions\ICollisionsResolver.cs" />
+    <Compile Include="Collisions\SimpleCollisionsDetector.cs" />
+    <Compile Include="ICollidable.cs" />
     <Compile Include="Infrastructure\IObjectsRemover.cs" />
     <Compile Include="RunningTasks\ByIntervalObjectGenerator.cs" />
     <Compile Include="ElectricFieldSources\CentralElectricFieldSource.cs" />
@@ -74,6 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Collisions\Colliders\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

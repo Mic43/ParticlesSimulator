@@ -6,7 +6,7 @@ using Core.Utils;
 
 namespace Core
 {
-    public class Particle : CentralElectricFieldSource, ITickReceiver
+    public class Particle : CentralElectricFieldSource, ITickReceiver, ICollidable<float>
     {
         private IElectricFieldSource<float> _electricFieldSource;
         public IElectricFieldSource<float> ElectricFieldSource

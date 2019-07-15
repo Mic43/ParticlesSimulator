@@ -17,6 +17,7 @@ using Core.Infrastructure;
 using Core.RunningTasks;
 using Core.Utils;
 using Timer = System.Windows.Forms.Timer;
+using Core.Collisions;
 
 namespace WindowsFormsClientSample
 {
@@ -51,11 +52,7 @@ namespace WindowsFormsClientSample
 
        
 
-        private float minimalDistance = 0.02f;
-        private bool AreTooClose(IPositionable<float> pos, IPositionable<float> part)
-        {
-            return (pos.Position - part.Position).Length() <= minimalDistance;
-        }
+     
 
         private void CreateAndSetupSimulation()
         {
@@ -70,9 +67,9 @@ namespace WindowsFormsClientSample
 
 
             _simulator = new SequentialCompositeTask(
-               // new ByIntervalPerform<Particle>(
-               //     TimeSpan.FromMilliseconds(200),
-               //     () => { AddParticle(Vector2D.Create(1.5f, 0.5f), Constants.ElementalCharge); }),
+                new ByIntervalPerform<Particle>(
+                    TimeSpan.FromMilliseconds(1000),
+                    () => { AddParticle(Vector2D.Create(1.5f, 0.5f), -Constants.ElementalCharge); }),
                //new ByIntervalPerform<Particle>(
                //     TimeSpan.FromMilliseconds(400),
                //     () => { AddParticle(Vector2D.Create(0.5f, 1.5f), Constants.ElementalCharge); }),
@@ -86,7 +83,11 @@ namespace WindowsFormsClientSample
                         }
                         _store.Remove((part) => !IsInBounds(part));
                     }),
-                new ParticlesUpdater(_store) { SimulationSpeed = 0.001f});
+                new ParticlesUpdater(_store,
+                    new DebugCollisionsResolver(new SimpleCollisionsDetector(_store,0.02f)))
+                {
+                    SimulationSpeed = 0.001f
+                });
 
 
             //_store.Put(CreateList(() =>
@@ -198,10 +199,10 @@ namespace WindowsFormsClientSample
                     (float)  Constants.ElementalCharge));
             }
 
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
-            //}
+            if (e.Button == MouseButtons.Left)
+            {
+                AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            }
             Render();
         }
 
@@ -224,10 +225,10 @@ namespace WindowsFormsClientSample
 
         private void renderingControl_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            //if (e.Button != MouseButtons.Left) return;
 
-            AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
-            Render();
+            //AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            //Render();
         }
     }
 }
