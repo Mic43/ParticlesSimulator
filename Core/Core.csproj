@@ -43,15 +43,23 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collisions\CollidersFactory.cs" />
+    <Compile Include="Collisions\Colliders\CommonCollider.cs" />
+    <Compile Include="Collisions\Colliders\Specific\ParticlesByDistanceCollider.cs" />
+    <Compile Include="Collisions\Colliders\Specific\ElectrodeByDistanceCollider.cs" />
+    <Compile Include="Collisions\Colliders\WrappingCollider.cs" />
     <Compile Include="Collisions\Collision.cs" />
-    <Compile Include="Collisions\DebugCollisionsResolver.cs" />
-    <Compile Include="Collisions\EmptyCollisionResolver.cs" />
-    <Compile Include="Collisions\ICollider.cs" />
-    <Compile Include="Collisions\ICollisionsDetector.cs" />
-    <Compile Include="Collisions\ICollisionsResolver.cs" />
-    <Compile Include="Collisions\SimpleCollisionsDetector.cs" />
+    <Compile Include="Collisions\Detectors\CollisionsDetector.cs" />
+    <Compile Include="Collisions\Resolvers\CollisionsResolverBase.cs" />
+    <Compile Include="Collisions\Resolvers\DebugCollisionsResolver.cs" />
+    <Compile Include="Collisions\Resolvers\EmptyCollisionResolver.cs" />
+    <Compile Include="Collisions\Colliders\ICollider.cs" />
+    <Compile Include="Collisions\Detectors\ICollisionsDetector.cs" />
+    <Compile Include="Collisions\Resolvers\ForceStopIfParticleCollisionResolver.cs" />
+    <Compile Include="Collisions\Resolvers\ICollisionsResolver.cs" />
     <Compile Include="ICollidable.cs" />
     <Compile Include="Infrastructure\IObjectsRemover.cs" />
     <Compile Include="RunningTasks\ByIntervalObjectGenerator.cs" />
@@ -82,8 +90,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collisions\Colliders\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

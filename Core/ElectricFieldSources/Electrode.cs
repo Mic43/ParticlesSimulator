@@ -6,7 +6,7 @@ using Core.Utils;
 
 namespace Core.ElectricFieldSources
 {
-    public class Electrode : Positionable<float>, IElectricFieldSource<float> 
+    public class Electrode : Positionable<float>, IElectricFieldSource<float>, ICollidable<float>
     {
         private readonly int _chargesCount;
         private readonly float _singleChargeValue;

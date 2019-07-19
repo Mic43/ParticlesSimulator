@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Collisions;
+using Core.Collisions.Resolvers;
 using Core.Infrastructure;
 
 namespace Core.RunningTasks
@@ -21,12 +23,12 @@ namespace Core.RunningTasks
             }
         }
 
-        public ParticlesUpdater(IObjectsProvider<ITickReceiver> particlesProvider) 
+        public ParticlesUpdater(IEnumerable<ITickReceiver> particlesProvider) 
             : this(particlesProvider,new EmptyCollisionResolver())
         {
         }
-        public ParticlesUpdater(IObjectsProvider<ITickReceiver> particlesProvider, 
-            ICollisionsResolver collisionsResolver )
+        public ParticlesUpdater(IEnumerable<ITickReceiver> particlesProvider,
+            ICollisionsResolver collisionsResolver)
         {
             if (particlesProvider == null)
             {
@@ -45,7 +47,7 @@ namespace Core.RunningTasks
                 //    tickReceiver.OnTick(TimeSpan.FromTicks((long) (SimulationSpeed * timespan.Ticks)));
                 //}
 
-                Parallel.ForEach(particlesProvider.Get(),
+                Parallel.ForEach(particlesProvider,
                     (particle) => particle.OnTick(TimeSpan.FromTicks((long)(SimulationSpeed * timespan.Ticks))));
 
                 collisionsResolver.ResolveAll();

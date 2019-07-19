@@ -18,15 +18,20 @@ using Core.RunningTasks;
 using Core.Utils;
 using Timer = System.Windows.Forms.Timer;
 using Core.Collisions;
+using Core.Collisions.Colliders;
+using Core.Collisions.Colliders.Specific;
+using Core.Collisions.Detectors;
+using Core.Collisions.Resolvers;
 
 namespace WindowsFormsClientSample
 {
     public partial class MainForm : Form
     {
         private IRunningTask _simulator;
-        private ObjectsStore<Particle> _store = new ObjectsStore<Particle>();
-        private readonly IList<IElectricFieldSource<float>> _electricFieldSources =
-            new List<IElectricFieldSource<float>>();
+        private SimulationObjectsCollection<float> _testCollection = new SimulationObjectsCollection<float>();
+     //   private ObjectsStore<IPositionable<float>> _store = new ObjectsStore<IPositionable<float>>();
+    //    private readonly IList<IElectricFieldSource<float>> _electricFieldSources =
+        //    new List<IElectricFieldSource<float>>();
         private readonly IPositionConverter _positionConverter = new PositionConverter(500);
         //   private CompoundElectricFieldSource<float> _compoundElectricFieldSource;
         //private IRunningTask _particlesGenerator;
@@ -34,60 +39,60 @@ namespace WindowsFormsClientSample
         private bool _stopSimulation = false;
         private readonly Random _random = new Random();
 
-        private List<T> CreateList<T>(Func<T> creator, int repeats)
-        {
-            var res = new List<T>();
-            for (int i = 0; i < repeats; i++)
-            {
-                res.Add(creator());
-            }
-
-            return res;
-        }
         public MainForm()
         {
             InitializeComponent();
             CreateAndSetupSimulation();
         }
 
-       
-
-     
-
         private void CreateAndSetupSimulation()
         {
-              _store = new ObjectsStore<Particle>();
-              _electricFieldSources.Clear();
+            _testCollection = new SimulationObjectsCollection<float>();
+              //_store = new ObjectsStore<IPositionable<float>>();
+            //  _electricFieldSources.Clear();
 
-            _electricFieldSources.Add(
-                new Electrode(Vector2D.Zero,
-                                Vector2D.One, 50,
-                                -(float)Constants.ElementalCharge,
-                                (float)Constants.CoulombConstant));
+            //_electricFieldSources.Add(
+            //    new Electrode(Vector2D.Zero,
+            //                    Vector2D.One, 50,
+            //                    -(float)Constants.ElementalCharge,
+            //                    (float)Constants.CoulombConstant));
 
+            _testCollection.Add(new Electrode(Vector2D.Zero,
+                Vector2D.One, 50,
+                -(float)Constants.ElementalCharge,
+                (float)Constants.CoulombConstant));
 
             _simulator = new SequentialCompositeTask(
-                new ByIntervalPerform<Particle>(
+                new ByIntervalPerform(
                     TimeSpan.FromMilliseconds(1000),
                     () => { AddParticle(Vector2D.Create(1.5f, 0.5f), -Constants.ElementalCharge); }),
-               //new ByIntervalPerform<Particle>(
-               //     TimeSpan.FromMilliseconds(400),
-               //     () => { AddParticle(Vector2D.Create(0.5f, 1.5f), Constants.ElementalCharge); }),
-                new ByIntervalPerform<IPositionable<float>>(TimeSpan.FromMilliseconds(2000),
+                //////new ByIntervalPerform<Particle>(
+                //     TimeSpan.FromMilliseconds(400),
+                //     () => { AddParticle(Vector2D.Create(0.5f, 1.5f), Constants.ElementalCharge); }),
+                new ByIntervalPerform(TimeSpan.FromMilliseconds(2000),
                     () =>
                     {
-                        foreach (var particle in _store.Get())
+                        var positionables = _testCollection.GetPositionables().Where(pos => !IsInBounds(pos)).ToList();
+                        foreach (var positionable in positionables)
                         {
-                            if (!IsInBounds(particle))
-                                _electricFieldSources.Remove(particle);
+                            _testCollection.Remove(positionable);
                         }
-                        _store.Remove((part) => !IsInBounds(part));
+                        //foreach (var particle in _store.Get())
+                        //{
+                        //    if (!IsInBounds(particle))
+                        //        _electricFieldSources.Remove(particle);
+                        //}
+                        //_store.Remove((part) => !IsInBounds(part));
                     }),
-                new ParticlesUpdater(_store,
-                    new DebugCollisionsResolver(new SimpleCollisionsDetector(_store,0.02f)))
-                {
-                    SimulationSpeed = 0.001f
-                });
+                new ParticlesUpdater(_testCollection.GetUpdatables(),
+                    new ForceStopIfParticleCollisionResolver<float>(
+                        new CollisionsDetector<float>(_testCollection.GetCollidables(),
+                        //new ByDistanceParticlesCollider(0.02f).Wrap())))
+                        new ElectrodeByDistanceCollider(0.01f).Wrap())))
+                        //new CommonCollider(0.01f))))
+                        {
+                            SimulationSpeed = 0.001f
+                        });
 
 
             //_store.Put(CreateList(() =>
@@ -109,9 +114,12 @@ namespace WindowsFormsClientSample
                 (float) Constants.ElectronMass,
                 (float) charge,
                 position: position);
-            newPart.ElectricFieldSource = new CompoundElectricFieldSource<float>(_electricFieldSources, newPart);
-            _electricFieldSources.Add(newPart);
-            _store.Put(Extensions.Single(newPart));
+            newPart.ElectricFieldSource = new CompoundElectricFieldSource<float>(
+                _testCollection.GetElectricFieldSources(), 
+                newPart);
+            _testCollection.Add(newPart);
+            //_electricFieldSources.Add(newPart);
+            //_store.Put(Extensions.Single(newPart));
         }
 
         private bool IsInBounds(IPositionable<float> particle)
@@ -140,7 +148,7 @@ namespace WindowsFormsClientSample
 
             void DisplayInfo()
             {
-                richTextBox.Text = $@"FPS: {(1.0 / sw.Elapsed.TotalSeconds):F} Particles: {_store.Get().Count()}";
+                richTextBox.Text = $@"FPS: {(1.0 / sw.Elapsed.TotalSeconds):F} Particles: {_testCollection.GetUpdatables().Count()}";
             }
         }
 
@@ -156,12 +164,12 @@ namespace WindowsFormsClientSample
         private void Render()
         {
             renderingControl.Particles =
-                _store.Get().OfType<IPositionable<float>>()
+                _testCollection.GetPositionables()
                     .Select(x => new ParticleRendering(_positionConverter.ToPixels(x.Position))).Cast<RenderedObject>()
 
-                    .Union(_electricFieldSources.OfType<CentralElectricFieldSource>().Where(x=>! (x is Particle))
+                    .Union(_testCollection.GetElectricFieldSources().OfType<CentralElectricFieldSource>().Where(x=>! (x is Particle))
                         .Select(x => new ElectricFieldSourceRendering(_positionConverter.ToPixels(x.Position))))
-                    .Union(_electricFieldSources.OfType<Electrode>()
+                    .Union(_testCollection.GetElectricFieldSources().OfType<Electrode>()
                         .Select(x => new ElectrodeRendering(_positionConverter.ToPixels(x.Position),
                             _positionConverter.ToPixels(x.EndPosition))));
 
@@ -194,15 +202,15 @@ namespace WindowsFormsClientSample
         {
             if (e.Button == MouseButtons.Right)
             {
-                _electricFieldSources.Add(new CentralElectricFieldSource(
+                _testCollection.Add(new CentralElectricFieldSource(
                     _positionConverter.FromPixels(e.Location),
                     (float)  Constants.ElementalCharge));
             }
 
-            if (e.Button == MouseButtons.Left)
-            {
-                AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
-            }
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            //}
             Render();
         }
 
@@ -225,10 +233,10 @@ namespace WindowsFormsClientSample
 
         private void renderingControl_MouseMove(object sender, MouseEventArgs e)
         {
-            //if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left) return;
 
-            //AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
-            //Render();
+            AddParticle(_positionConverter.FromPixels(e.Location), Constants.ElementalCharge);
+            Render();
         }
     }
 }

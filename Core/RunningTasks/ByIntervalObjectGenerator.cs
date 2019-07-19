@@ -7,7 +7,7 @@ namespace Core.RunningTasks
     /// 
     /// </summary>
     /// <typeparam name="T"> type of objects to generate</typeparam>
-    public class ByIntervalObjectsGenerator<T> : ByIntervalPerform<T>
+    public class ByIntervalObjectsGenerator<T> : ByIntervalPerform
     {
 
         public IObjectsWriter<T> ObjectsWriter { get; }

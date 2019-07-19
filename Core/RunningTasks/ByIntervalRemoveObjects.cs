@@ -3,7 +3,7 @@ using Core.Infrastructure;
 
 namespace Core.RunningTasks
 {
-    public class ByIntervalRemoveObjects<T> : ByIntervalPerform<T>
+    public class ByIntervalRemoveObjects<T> : ByIntervalPerform
     {
 
         public IObjectsRemover<T> ObjectsRemover { get; }

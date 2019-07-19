@@ -2,7 +2,7 @@
 
 namespace Core.RunningTasks
 {
-    public class ByIntervalPerform<T> : RunningTask
+    public class ByIntervalPerform : RunningTask
     {
         private TimeSpan _lastGeneration = TimeSpan.Zero;
         public TimeSpan Interval { get; }

@@ -17,6 +17,7 @@ namespace Core
 
         public float Mass { get; set; }
         public Vector<float> Velocity { get; private set; }
+        public bool ForceStop { get; set; }
 
         public Particle(float mass,
             float charge = 0.0f,
@@ -43,15 +44,17 @@ namespace Core
         }
 
         public void OnTick(TimeSpan elapsed)
-        { 
+        {
+            if (ForceStop)
+                return;
+
             var intensity = ElectricFieldSource.GetIntensity(Position);
             var force = intensity * Charge; 
             var acceleration = force * (1 / Mass);
 
             float elapsedSeconds = (float)elapsed.TotalSeconds;
             var positionChange = acceleration * elapsedSeconds * elapsedSeconds * 0.5f + Velocity* elapsedSeconds;
-           // Debug.AutoFlush = true;
-          //  Debug.WriteLine(positionChange);
+
             Velocity+= acceleration * elapsedSeconds;
 
             Position = Position + positionChange;
@@ -59,7 +62,7 @@ namespace Core
 
         public override string ToString()
         {
-            return $"Position: {Position}, Velocity: {Velocity}";
+            return $"Particle - Position: {Position}, Velocity: {Velocity}";
         }
     }
 }

@@ -14,7 +14,14 @@ namespace Core.Utils
         {
             return Create(value, value);
         }
-
+        public static float X(this Vector<float> vec)
+        {
+            return vec[0];
+        }
+        public static float Y(this Vector<float> vec)
+        {
+            return vec[1];
+        }
         public static Vector<float> Zero { get; } = Create(0, 0);
 
         public static Vector<float> One { get; } = Create(1, 1);

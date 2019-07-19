@@ -16,6 +16,10 @@ namespace Core.Utils
             }
             return (float) Math.Sqrt(acc);
         }
+        public static float DistanceTo(this Vector<float> vec, Vector<float> other)
+        {
+            return (vec - other).Length();
+        }
         public static IEnumerable<Vector<float>> CreatePositionsDistribution(Vector<float> start,
             Vector<float> end, int count)
         {
