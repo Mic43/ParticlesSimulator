@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<electrodes>
+	<electrode>
+		<startPoint x = "0.0" y = "0.0" />
+		<endPoint x = "1.0" y = "010" />
+		<singleChargeValue>1.0</singleChargeValue>
+		<chargesCount> 50 </chargesCount>
+	</electrode>
+	<particleGenerators>
+	    <particleGenerator>
+	        <position x="0.0" y = "0.0"></position>
+	        <charge>1.0</charge>
+	        <timeIntervalMs>1000</timeIntervalMs>
+	    </particleGenerator>
+	</particleGenerators>
+</electrodes>

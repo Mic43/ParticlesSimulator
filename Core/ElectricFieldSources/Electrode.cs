@@ -25,7 +25,7 @@ namespace Core.ElectricFieldSources
             EndPosition = endPosition;
 
             _charges = new CompoundElectricFieldSource<float>(
-                Extensions.CreatePositionsDistribution(Position,EndPosition,chargesCount)
+                EnumerableExtensions.CreatePositionsDistribution(Position,EndPosition,chargesCount)
                     .Select(x=> new CentralElectricFieldSource(x,singleChargeValue, coulombConstant)));
         }
      

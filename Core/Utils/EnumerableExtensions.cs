@@ -5,21 +5,8 @@ using System.Numerics;
 
 namespace Core.Utils
 {
-    public static class Extensions
+    public static class EnumerableExtensions
     {
-        public static float Length (this Vector<float> vec) 
-        {
-            float acc = default(float);
-            for (int i = 0; i < Vector<float>.Count; i++)
-            {
-                acc += vec[i]*vec[i];
-            }
-            return (float) Math.Sqrt(acc);
-        }
-        public static float DistanceTo(this Vector<float> vec, Vector<float> other)
-        {
-            return (vec - other).Length();
-        }
         public static IEnumerable<Vector<float>> CreatePositionsDistribution(Vector<float> start,
             Vector<float> end, int count)
         {
@@ -36,7 +23,6 @@ namespace Core.Utils
         {
             return CreateItems(count, () => new T());
         }
-
         public static IEnumerable<T> CreateItems<T>(int count, Func<T> creator)
         {
             for (int i = 0; i < count; i++)
@@ -44,7 +30,7 @@ namespace Core.Utils
                 yield return creator();
             }
         }
-        public static IEnumerable<T> Single<T>( T element)
+        public static IEnumerable<T> Single<T>( this T element)
         {
             return Enumerable.Repeat(element, 1);
         }

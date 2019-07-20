@@ -19,7 +19,7 @@ namespace Core.Collisions.Detectors
 
         public IEnumerable<Collision<T>> Get()
         {
-            var collisions = _objects.SelectMany(obj => _objects.Except(Extensions.Single<ICollidable<T>>(obj))
+            var collisions = _objects.SelectMany(obj => _objects.Except(EnumerableExtensions.Single<ICollidable<T>>(obj))
                     .Where(obj2 => _collider.AreColliding(obj, obj2)),
                 (obj, obj2) => new Collision<T>(obj, obj2)).Distinct();
             return collisions;

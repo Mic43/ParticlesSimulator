@@ -3,7 +3,7 @@ using Core.Collisions.Colliders;
 
 namespace Core.Collisions
 {
-    public static class CollidersFactory
+    public static class CollidersExtensions
     {
         //public static WrappingCollider<T, TFirst, TSecond> Wrap<T, TFirst, TSecond>(ICollider<T, TFirst, TSecond> collider)
         //    where T : struct

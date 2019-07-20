@@ -2,11 +2,11 @@
 
 namespace Core.Collisions.Colliders
 {
-    public class CommonCollider : ICollider<float>
+    public class Collider : ICollider<float>
     {
         public float MinimalDistance { get; }
 
-        public CommonCollider(float minimalDistance)
+        public Collider(float minimalDistance)
         {
             MinimalDistance = minimalDistance;
         }

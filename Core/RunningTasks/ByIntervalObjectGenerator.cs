@@ -25,7 +25,7 @@ namespace Core.RunningTasks
         {
             //TODO: proper count calucaltion
             int count = 1;
-            ObjectsWriter.Put(Utils.Extensions.CreateItems<T>(count, ObjectsFactory));
+            ObjectsWriter.Put(Utils.EnumerableExtensions.CreateItems<T>(count, ObjectsFactory));
            
         }
     }

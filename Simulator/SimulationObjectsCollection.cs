@@ -1,13 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core;
 using Core.ElectricFieldSources;
 
-namespace WindowsFormsClientSample
+namespace Simulator
 {
     public class SimulationObjectsCollection<T> where T : struct
     {
-        private readonly IList<object> _objects = new List<object>();
+        private readonly List<object> _objects = new List<object>();
+
+        public SimulationObjectsCollection()
+        {
+            
+        }
+        public SimulationObjectsCollection(IEnumerable<IPositionable<T>> initialObjects)
+        {
+            if (initialObjects == null) throw new ArgumentNullException(nameof(initialObjects));
+            _objects.AddRange(initialObjects);
+        }
 
         public void Add(IPositionable<T> obj)
         {
