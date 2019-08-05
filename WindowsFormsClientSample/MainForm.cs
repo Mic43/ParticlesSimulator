@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using WindowsFormsClientSample.Renderings;
 using Core;
 using Core.ElectricFieldSources;
+using Core.Interpolation;
 using Core.Utils;
 using Simulator;
 
@@ -17,7 +20,7 @@ namespace WindowsFormsClientSample
         private ParticlesSimulator<float> _simulator;
         private IParticlesSimulatorFactory<float> _particlesSimulatorFactory;
         
-        private readonly IPositionConverter _positionConverter = new PositionConverter(500);
+        private readonly IPositionConverter _positionConverter = new PositionConverter(1000);
      
         private bool _stopSimulation = false;
         private readonly Random _random = new Random();
@@ -30,12 +33,47 @@ namespace WindowsFormsClientSample
 
         private void CreateAndSetupSimulation()
         {
-            _particlesSimulatorFactory = new FromXmlParticlesSimulatorsFactory(
-                @"input\1.xml",
-                IsInBounds,
-                TimeSpan.FromMilliseconds(2000),0.001f);
-            _simulator = _particlesSimulatorFactory.Create();
+            string path = "export a.txt";
+            //            float unitSize = _positionConverter.FromPixels(new Point(1, 1)).X();
+            float totalSize = 1.0f; // 1 meter
+            float unitSize = 0.01f;
 
+            //var fromVoltageElectricFieldSource = new FromVoltageElectricFieldSource(BitmapHelper.GetGrayScaleBitmapPixels(path), 0, 100, unitSize);
+
+            //            _particlesSimulatorFactory = new FromXmlParticlesSimulatorsFactory(
+            //                @"input\1.xml",
+            //                IsInBounds,
+            //                TimeSpan.FromMilliseconds(2000),0.001f);
+            Vector<float> origin = Vector2D.Zero;
+
+            var fs = new FromIntensityMapElectricFieldSource(LoadIntensityFromFile(path, unitSize, totalSize), new NearestNeighbor(),
+                unitSize, origin);
+            _particlesSimulatorFactory = new ParticlesSimulatorFactory(0.001f, 0.00001f);
+            _simulator = _particlesSimulatorFactory.Create();
+            _simulator.ObjectsCollection.Add(fs);
+        }
+
+        private Vector<float>[,] LoadIntensityFromFile(string path,float unitSize,float totalSize)
+        {
+            CultureInfo cultureInfo = (CultureInfo)CultureInfo.InvariantCulture.Clone();
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+
+            int len = (int)(totalSize / unitSize);
+            var list = File.ReadAllLines(path).SkipWhile(x=>x.StartsWith("%")).Select( str =>
+            {
+                string[] words = str.Split(new char[] {' '},StringSplitOptions.RemoveEmptyEntries);
+                return new
+                {
+                    X = (int) (float.Parse(words[0], cultureInfo) * 0.001f / unitSize),
+                    Y = (int)(float.Parse(words[1], cultureInfo) * 0.001f / unitSize),
+                    Vec = Vector2D.Create(float.Parse(words[2], cultureInfo), float.Parse(words[3], cultureInfo))
+                };
+            }).ToList();
+
+            Vector<float>[,] res = new Vector<float>[len, len];
+            list.ForEach( data => res[data.X,data.Y] = data.Vec);
+
+            return res;
         }
 
         private void AddParticle(Vector<float> position, double charge)
@@ -76,8 +114,10 @@ namespace WindowsFormsClientSample
 
             void DisplayInfo()
             {
-                richTextBox.Text = $@"FPS: {1.0 / sw.Elapsed.TotalSeconds:F} 
-                                    Particles {_simulator.ObjectsCollection.GetUpdatables().Count()}";
+             //   richTextBox.Text = $@"FPS: {1.0 / sw.Elapsed.TotalSeconds:F} 
+               //                     Particles {_simulator.ObjectsCollection.GetUpdatables().Count()}";
+
+                richTextBox.AppendText(_simulator.ObjectsCollection.GetPositionables().OfType<Particle>().Aggregate(string.Empty,(s, positionable) => s+= positionable));
             }
         }
 

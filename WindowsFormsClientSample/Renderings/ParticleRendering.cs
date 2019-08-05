@@ -9,9 +9,9 @@ namespace WindowsFormsClientSample.Renderings
         {
         }
 
-        public override void Draw(Graphics graphics)
+        protected override void DrawSpecific(Graphics graphics)
         {
-            if (graphics == null) throw new ArgumentNullException(nameof(graphics));
+        
             graphics.FillEllipse(new SolidBrush(Color.Blue), Location.X-2.5f, Location.Y-2.5f, 5, 5);
         }
     }

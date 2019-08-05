@@ -12,7 +12,7 @@ namespace WindowsFormsClientSample.Renderings
             End = end;
         }
 
-        public override void Draw(Graphics gr)
+        protected override void DrawSpecific(Graphics gr)
         {
             gr.DrawLine(new Pen(Color.Red,2.0f),Location,End);
         }

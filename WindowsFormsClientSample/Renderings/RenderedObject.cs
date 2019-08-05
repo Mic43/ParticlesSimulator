@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 
 namespace WindowsFormsClientSample.Renderings
 {
@@ -10,6 +11,17 @@ namespace WindowsFormsClientSample.Renderings
         }
 
         public Point Location { get; }
-        public abstract void Draw(Graphics gr);
+
+        public void Draw(Graphics gr)
+        {
+            if (gr == null) throw new ArgumentNullException(nameof(gr));
+
+            var limit = 10000;
+            if (Location.X <= -limit || Location.X >= limit || Location.Y <= -limit || Location.Y >= limit)
+                return;
+            DrawSpecific(gr);
+        }
+
+        protected abstract void DrawSpecific(Graphics gr);
     }
 }

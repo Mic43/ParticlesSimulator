@@ -20,7 +20,7 @@ namespace Simulator
             _objects.AddRange(initialObjects);
         }
 
-        public void Add(IPositionable<T> obj)
+        public void Add(object obj)
         {
             _objects.Add(obj);
         }
@@ -44,6 +44,11 @@ namespace Simulator
         public IEnumerable<IElectricFieldSource<T>> GetElectricFieldSources()
         {
             return _objects.OfType<IElectricFieldSource<T>>();
+        }
+
+        public void Clear()
+        {
+            _objects.Clear();
         }
     }
 }

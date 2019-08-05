@@ -16,8 +16,7 @@ namespace Core.Collisions
             //this.Object2 = object2 ?? throw new System.ArgumentNullException(nameof(object2));
             _contents.Add(object1);
             _contents.Add(object2);
-
-         
+        
         }
 
         public ICollidable<T> Object1 => _contents.First();

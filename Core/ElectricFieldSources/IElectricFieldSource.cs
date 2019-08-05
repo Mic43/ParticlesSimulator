@@ -6,4 +6,6 @@ namespace Core.ElectricFieldSources
     {
         Vector<T> GetIntensity(Vector<T> location);
     }
+
+   
 }

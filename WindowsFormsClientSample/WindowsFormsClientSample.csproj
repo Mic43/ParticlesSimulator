@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitmapHelper.cs" />
     <Compile Include="Renderings\ElectricFieldSourceRendering.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
